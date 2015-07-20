@@ -27,6 +27,7 @@ def main_loop(directory, delete_option):
 
         def create_file_list():
             folder = directory
+            # TODO add avi, wmv, mov, m4v as file types
             file_types = ".mkv"
             file_list = list()
             for dir_path, dir_names, file_names in os.walk(folder):
