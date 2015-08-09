@@ -21,9 +21,8 @@ def convert(directory):
         new_dir_path = dir_path.replace("foobar2000", "mp3")
         if not os.path.isdir(new_dir_path):
             os.makedirs(new_dir_path)
-        args = ' -hide_banner -i "' + path + '" -ab 192k -map_metadata 0 -id3v2_version 3 "' \
-               + new_path + '.mp3"'
-        process = 'ffmpeg' + args
+        process = 'ffmpeg -hide_banner -i "' + path + '" -ab 192k -map_metadata 0 -id3v2_version 3 "' \
+                  + new_path + '.mp3"'
         subprocess.Popen(process, stdout=subprocess.PIPE).stdout.read()
 
     def loop():
@@ -33,5 +32,5 @@ def convert(directory):
 
 if __name__ == '__main__':
     start_time = time.time()
-    convert(r'E:\Music\foobar2000')
+    convert(r'D:\Music\foobar2000')
     print("Done In " + str(round((time.time() - start_time), 2)) + " seconds")

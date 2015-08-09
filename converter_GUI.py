@@ -92,21 +92,19 @@ class MainWindow:
         def converter(file_name, dir_path):
             path = os.path.join(dir_path, file_name)
             path_without_type = path.strip(type_text())
-            ffmpeg_path = r"C:\ffmpeg\bin\ffmpeg.exe"
             if type_text() == ".mkv":
-                args = ' -hide_banner -i "' + path + '" -metadata title="" -strict experimental ' \
+                process = 'ffmpeg -hide_banner -i "' + path + '" -metadata title="" -strict experimental ' \
                     '-c:v copy -c:a aac -b:a 384k "' + path_without_type + '.mp4"'
             elif type_text() == ".flac":
                 new_path = path_without_type.replace("foobar2000", "mp3")
                 new_dir_path = dir_path.replace("foobar2000", "mp3")
                 if not os.path.isdir(new_dir_path):
                     os.makedirs(new_dir_path)
-                args = ' -hide_banner -i "' + path + '" -ab 320k -map_metadata 0 -id3v2_version 3 "' \
-                       + new_path + '.mp3"'
+                process = 'ffmpeg -hide_banner -i "' + path + '" -ab 320k -map_metadata 0 -id3v2_version 3 "' \
+                          + new_path + '.mp3"'
             else:
-                args = ' -hide_banner -i "' + path + '" -metadata title=""  -strict experimental ' \
+                process = 'ffmpeg -hide_banner -i "' + path + '" -metadata title=""  -strict experimental ' \
                     '-c:v libx264 -preset ultrafast -c:a aac -b:a 384k "' + path_without_type + '.mp4"'
-            process = ffmpeg_path + args
             print(process)
             subprocess.Popen(process, stdout=subprocess.PIPE).stdout.read()
 
