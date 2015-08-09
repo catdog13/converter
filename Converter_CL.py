@@ -39,10 +39,9 @@ def main_loop(directory, delete_option):
 
         def converter(path):
             path_without_type = path.strip(".mkv")
-            ffmpeg_path = r"C:\ffmpeg\bin\ffmpeg.exe"
-            args = ' -hide_banner -i "' + path + '" -metadata title="" -strict experimental ' \
+            process = 'ffmpeg -hide_banner -i "' + path + '" -metadata title="" -strict experimental ' \
                 '-c:v copy -c:a aac -b:a 384k "' + path_without_type + '.mp4"'
-            process = ffmpeg_path + args
+
             subprocess.Popen(process, stdout=subprocess.PIPE).stdout.read()
             if delete_file() is True:
                 os.remove(path)
@@ -53,6 +52,6 @@ def main_loop(directory, delete_option):
 
         loop()
 if __name__ == '__main__':
-    main_loop(r'E:\TV', True)
-    main_loop(r'E:\complete\Movies', False)
+    main_loop(r'D:\TV', True)
+    main_loop(r'D:\complete\Movies', False)
     print("All Done")
