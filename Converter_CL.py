@@ -29,11 +29,12 @@ def main_loop(directory, delete_option):
         folder = directory
         file_types = ('.avi', '.wmv', '.mov', '.m4v', '.mkv')
         file_list = []
-        for dir_path, dir_names, file_names in os.walk(folder):
-            for filename in [f for f in file_names if f.endswith(file_types)]:
-                file_path = os.path.join(dir_path, filename)
-                if get_input(filename) is True:
-                    file_list.append(file_path)
+        for root, subdir, files in os.walk(folder):
+            for file in files:
+                if file.endswith(file_types):
+                    full_path = os.path.join(root, file)
+                    if get_input(file) is True:
+                        file_list.append(full_path)
         return file_list
 
     def converter(path):
