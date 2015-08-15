@@ -1,18 +1,24 @@
 import subprocess
 import os
 import time
+import shutil
 
 
 def convert(directory):
     def create_file_list():
         folder = directory
-        file_types = ".flac"
-        file_list = list()
-        for dir_path, dir_names, file_names in os.walk(folder):
-            for filename in [f for f in file_names if f.endswith(file_types)]:
-                path = os.path.join(dir_path, filename)
-                file_list.append(path)
-        return file_list
+        file_list = []
+        cover_list = []
+        for root, subdir, files in os.walk(folder):
+            for songs in files:
+                if songs.endswith('.flac'):
+                    full_path = os.path.join(root, songs)
+                    file_list.append(full_path)
+            for covers in files:
+                if covers.endswith('.jpg'):
+                    cover_path = os.path.join(root, covers)
+                    cover_list.append(cover_path)
+        return file_list, cover_list
 
     def converter(path):
         path_without_type = path.strip(".flac")
@@ -25,9 +31,15 @@ def convert(directory):
                   + new_path + '.mp3"'
         subprocess.Popen(process, stdout=subprocess.PIPE).stdout.read()
 
+    def mover(path):
+        new_path = path.replace("foobar2000", "mp3")
+        shutil.copy2(path, new_path)
+
     def loop():
-        for file_path in create_file_list():
-            converter(file_path)
+        for song_path in create_file_list()[0]:
+            converter(song_path)
+        for cover_path in create_file_list()[1]:
+            mover(cover_path)
     loop()
 
 if __name__ == '__main__':
