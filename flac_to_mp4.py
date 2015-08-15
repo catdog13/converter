@@ -29,7 +29,9 @@ def convert(directory):
             os.makedirs(new_dir_path)
         process = 'ffmpeg -hide_banner -i "' + path + '" -ab 192k -map_metadata 0 -id3v2_version 3 "' \
                   + new_path + '.mp3"'
-        subprocess.Popen(process, stdout=subprocess.PIPE).stdout.read()
+        print('Starting ' + path)
+        subprocess.call(process, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        print('Finished ' + path)
 
     def mover(path):
         new_path = path.replace("foobar2000", "mp3")
