@@ -46,9 +46,11 @@ def main_loop(directory, delete_option):
         else:
             process = 'ffmpeg -hide_banner -i "' + path + '" -metadata title=""  -strict experimental ' \
                       '-c:v libx264 -preset ultrafast -c:a aac -b:a 384k "' + path_without_type + '.mp4"'
-        subprocess.Popen(process, stdout=subprocess.PIPE).stdout.read()
+        print('Starting ' + path)
+        subprocess.call(process, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         if delete_file() is True:
             os.remove(path)
+        print('Finished ' + path)
 
     def loop():
         for file_path in create_file_list():
