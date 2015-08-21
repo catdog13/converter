@@ -7,7 +7,7 @@ def converter():
     process = 'ffmpeg -hide_banner -i "' + path + \
               '" -metadata title="" -strict experimental ' \
               '-map 0:0 -c:v copy ' \
-              '-map 0:2 -c:a aac -b 192k "' + path_without + '.mp4"'
+              '-map 0:2 -c:a aac -b:a 384k "' + path_without + '.mp4"'
 
     subprocess.Popen(process, stdout=subprocess.PIPE).stdout.read()
 
