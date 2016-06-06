@@ -1,16 +1,14 @@
 import os
 import subprocess
-import dataset
 from tkinter import Tk, Label, Entry, IntVar, Radiobutton, Checkbutton, Listbox, MULTIPLE, Scrollbar, \
     VERTICAL, HORIZONTAL, Button, END
 from tkinter.filedialog import askdirectory
-db = dataset.connect('sqlite:///:memory:')
-table = db['file_list']
 
 
 class MainWindow:
     def __init__(self, window):
         self.window = window
+        self.file_dict = dict()
         window.title('mkv to mp4')  # title
         Label(window, text='Path to search').grid(row=1, column=1)
         self.path_entry = Entry(window, width=30)  # entry for the path
@@ -80,15 +78,15 @@ class MainWindow:
         return delete_text
 
     def search_file_names(self):
+        self.file_dict.clear()
         folder = self.path_entry.get()  # gets the path filter
         folder = folder.replace('/', '\\')
         file_types = self.type_text()
         self.select.delete(0, END)
-        for dir_path, dir_names, file_names in os.walk(folder):  # things start happening, idk
+        for dir_path, dir_names, file_names in os.walk(folder):
             for filename in [f for f in file_names if f.endswith(file_types)]:
-                file_path = os.path.join(dir_path, filename)  # making the path
                 self.select.insert(END, filename)
-                table.insert(dict(db_file_name=filename, db_dir_path=dir_path, db_file_path=file_path))
+                self.file_dict[filename] = dir_path
 
     def converter(self, file_name, dir_path):
         path = os.path.join(dir_path, file_name)
@@ -106,25 +104,20 @@ class MainWindow:
         else:
             process = 'ffmpeg -hide_banner -i "{0}" -metadata title=""  -strict experimental ' \
                       '-c:v libx264 -preset ultrafast -c:a aac -b:a 384k "{1}.mp4"'.format(path, path_without_type)
-        print(process)
         subprocess.Popen(process, stdout=subprocess.PIPE).stdout.read()
 
     def converting_list(self):
-        file_tuple = self.select.curselection()
-        file_list = list(file_tuple)
-        list_length = len(file_list)
-        for x in range(0, list_length):
-            name = self.select.get(file_list[x])
-            file_name = table.find_one(db_file_name=name)['db_file_name']
-            dir_path = table.find_one(db_file_name=name)['db_dir_path']
-            self.converter(file_name, dir_path)
-            self.done_text.insert(END, name + ' Is Done')
+        number_list = list(self.select.curselection())
+        for numbers in number_list:
+            file_name = self.select.get(numbers)
+            file_dir = self.file_dict.get(file_name)
+            self.converter(file_name, file_dir)
+            self.done_text.insert(END, file_name + ' Is Done')
             self.window.update()
             if self.delete_file() == 'yes':
-                path = os.path.join(dir_path, file_name)
+                path = os.path.join(file_dir, file_name)
                 os.remove(path)
         self.done_text.insert(END, 'All Done')
-
 
 if __name__ == '__main__':
     root = Tk()
