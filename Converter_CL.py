@@ -38,14 +38,14 @@ def main_loop(directory, delete_option):
         return file_list
 
     def converter(path):
-        file_type = path[-4:]
-        path_without_type = path[:-4]
+        file_type = os.path.splitext(path)[-1]
+        path_without_type = os.path.splitext(path)[0]
         if file_type == '.mkv':
-            process = 'ffmpeg -hide_banner -i "' + path + '" -metadata title="" -strict experimental ' \
-                      '-c:v copy -c:a aac -b:a 384k "' + path_without_type + '.mp4"'
+            process = 'ffmpeg -hide_banner -i "{}" -metadata title="" -strict experimental ' \
+                      '-c:v copy -c:a aac -b:a 384k "{}.mp4"'.format(path, path_without_type)
         else:
-            process = 'ffmpeg -hide_banner -i "' + path + '" -metadata title=""  -strict experimental ' \
-                      '-c:v libx264 -preset ultrafast -c:a aac -b:a 384k "' + path_without_type + '.mp4"'
+            process = 'ffmpeg -hide_banner -i "{}" -metadata title=""  -strict experimental ' \
+                      '-c:v libx264 -preset ultrafast -c:a aac -b:a 384k "{}.mp4"'.format(path, path_without_type)
         print('Starting ' + path)
         subprocess.call(process, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         if delete_file() is True:
