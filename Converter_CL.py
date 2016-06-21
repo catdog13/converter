@@ -4,13 +4,6 @@ import subprocess
 
 
 def main_loop(directory, delete_option):
-    def delete_file():
-        if delete_option is True:
-            delete_text = True
-        else:
-            delete_text = False
-        return delete_text
-
     def get_input(file_name, default="yes"):
         valid = {"yes": True, "y": True, "ye": True,
                  "no": False, "n": False}
@@ -48,14 +41,13 @@ def main_loop(directory, delete_option):
                       '-c:v libx264 -preset ultrafast -c:a aac -b:a 384k "{}.mp4"'.format(path, path_without_type)
         print('Starting ' + path)
         subprocess.call(process, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-        if delete_file() is True:
+        if delete_option:
             os.remove(path)
         print('Finished ' + path)
 
-    def loop():
-        for file_path in create_file_list():
-            converter(file_path)
-    loop()
+    for file_path in create_file_list():
+        converter(file_path)
+
 
 if __name__ == '__main__':
     main_loop(r'D:\TV', True)
