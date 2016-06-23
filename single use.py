@@ -1,14 +1,13 @@
 import subprocess
+import os
 
 
-def converter():
-    path = r"insert full path including file name here"
-    path_without = path.strip(".mkv")
-    process = 'ffmpeg -hide_banner -i "' + path + \
-              '" -metadata title="" -strict experimental ' \
+def converter(path):
+    path_without = os.path.splitext(path)[0]
+    process = 'ffmpeg -hide_banner -i "{}" -metadata title="" -strict experimental ' \
               '-map 0:0 -c:v copy ' \
-              '-map 0:2 -c:a aac -b:a 384k "' + path_without + '.mp4"'
+              '-map 0:2 -c:a aac -b:a 384k "{}.mp4"'.format(path, path_without)
 
     subprocess.Popen(process, stdout=subprocess.PIPE).stdout.read()
 
-converter()
+converter(r'')

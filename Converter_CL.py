@@ -8,7 +8,7 @@ def main_loop(directory, delete_option):
         valid = {"yes": True, "y": True, "ye": True,
                  "no": False, "n": False}
         while True:
-            sys.stdout.write('Do you want to convert ' + file_name + '[Y/n]')
+            sys.stdout.write('Do you want to convert', file_name, '[Y/n]')
             choice = input().lower()
             if default is not None and choice == '':
                 return valid[default]
@@ -39,11 +39,11 @@ def main_loop(directory, delete_option):
         else:
             process = 'ffmpeg -hide_banner -i "{}" -metadata title=""  -strict experimental ' \
                       '-c:v libx264 -preset ultrafast -c:a aac -b:a 384k "{}.mp4"'.format(path, path_without_type)
-        print('Starting ' + path)
+        print('Starting', path)
         subprocess.call(process, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         if delete_option:
             os.remove(path)
-        print('Finished ' + path)
+        print('Finished', path)
 
     for file_path in create_file_list():
         converter(file_path)

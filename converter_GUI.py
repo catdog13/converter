@@ -79,18 +79,16 @@ class MainWindow:
 
     def search_file_names(self):
         self.file_dict.clear()
-        folder = self.path_entry.get()  # gets the path filter
-        folder = folder.replace('/', '\\')
-        file_types = self.type_text()
+        folder = self.path_entry.get().replace('/', '\\')
         self.select.delete(0, END)
         for dir_path, dir_names, file_names in os.walk(folder):
-            for filename in [f for f in file_names if f.endswith(file_types)]:
+            for filename in [f for f in file_names if f.endswith(self.type_text())]:
                 self.select.insert(END, filename)
                 self.file_dict[filename] = dir_path
 
     def converter(self, file_name, dir_path):
         path = os.path.join(dir_path, file_name)
-        path_without_type = path.strip(self.type_text())
+        path_without_type = os.path.splitext(path)[0]
         if self.type_text() == '.mkv':
             process = 'ffmpeg -hide_banner -i "{0}" -metadata title="" -strict experimental ' \
                     '-c:v copy -c:a aac -b:a 384k "{1}.mp4"'.format(path, path_without_type)
@@ -107,8 +105,7 @@ class MainWindow:
         subprocess.Popen(process, stdout=subprocess.PIPE).stdout.read()
 
     def converting_list(self):
-        number_list = list(self.select.curselection())
-        for numbers in number_list:
+        for numbers in list(self.select.curselection()):
             file_name = self.select.get(numbers)
             file_dir = self.file_dict.get(file_name)
             self.converter(file_name, file_dir)
