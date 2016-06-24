@@ -8,7 +8,7 @@ def main_loop(directory, delete_option):
         valid = {"yes": True, "y": True, "ye": True,
                  "no": False, "n": False}
         while True:
-            sys.stdout.write('Do you want to convert', file_name, '[Y/n]')
+            sys.stdout.write('Do you want to convert {} [Y/n]'.format(file_name))
             choice = input().lower()
             if default is not None and choice == '':
                 return valid[default]
