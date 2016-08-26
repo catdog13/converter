@@ -20,7 +20,7 @@ def main_loop(directory, delete_option):
 
     def create_file_list():
         folder = directory
-        file_types = ('.avi', '.wmv', '.mov', '.m4v', '.mkv')
+        file_types = ('.avi', '.wmv', '.mov', '.m4v', '.mkv', '.ts')
         file_list = []
         for root, subdir, files in os.walk(folder):
             for file in files:
@@ -31,9 +31,11 @@ def main_loop(directory, delete_option):
         return file_list
 
     def converter(path):
+        copy_file_types = ['.mkv', '.ts']
+        # encode_file_types = ['.avi', '.wmv', '.mov', '.m4v']
         file_type = os.path.splitext(path)[-1]
         path_without_type = os.path.splitext(path)[0]
-        if file_type == '.mkv':
+        if file_type in copy_file_types:
             process = 'ffmpeg -hide_banner -i "{}" -metadata title="" -strict experimental ' \
                       '-c:v copy -c:a aac -b:a 384k "{}.mp4"'.format(path, path_without_type)
         else:
